@@ -1,8 +1,17 @@
-import { _decorator, Component, Node,Label,Animation } from 'cc';
+import { _decorator, Component, Node,Label,Animation,Toggle,Button,Sprite,Color } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Game')
 export class Game extends Component {
+
+    @property({type:Toggle})
+    private Atoggle:Toggle = null;
+
+    @property({type:Toggle})
+    private Btoggle:Toggle = null;
+
+    @property({type:Toggle})
+    private Ctoggle:Toggle = null;
 
     @property({type:Node})
     private calliNode:Node=null;
@@ -16,6 +25,15 @@ export class Game extends Component {
     @property({type:Label})
     private hintLabel:Label=null;
 
+    @property({type:Label})
+    private ALabel:Label=null;
+
+    @property({type:Label})
+    private BLabel:Label=null;
+
+    @property({type:Label})
+    private CLabel:Label=null;
+
     @property(Animation)
     BodyAnim2:Animation = null;
 
@@ -28,38 +46,48 @@ export class Game extends Component {
     @property(Animation)
     BodyAnim5:Animation = null;
 
+    @property({type:Button})
+    private Submit:Button=null;
+
+    @property({type:Sprite})
+    private SubmitSprite:Sprite=null;
+
     private ans=0;//是否已经提交过
     private peRes2=-1;
     private choice2='';
-    //按钮响应函数
-    choice(event,CustomEventData){
-        let pkRes=-1; //0为选错,1为选对
-        let show2=0;
-        let choiceTarget=event.target.name;//获取目标节点的name
 
-        if(choiceTarget=='A'&&this.ans==0)
-        {
+    onToggleClicked(toggle:Toggle,CustomEventData) {
+       
+       if(CustomEventData==1&&this.ans==0)
+       {
+            this.Submit.interactable=true;
+            this.SubmitSprite.color = new Color(255, 255, 255); 
+            this.show(1);
             this.choice2='A';
-            show2=1;
-            this.show(show2);
-            pkRes=1;
-            this.peRes2=1;
-        }
-        else if (choiceTarget=='B'&&this.ans==0){
+            this.ALabel.color = Color.WHITE;
+            this.BLabel.color = Color.BLACK;
+            this.CLabel.color = Color.BLACK;
+       }
+       else if(CustomEventData==2&&this.ans==0)
+       {
+            this.Submit.interactable=true;
+            this.SubmitSprite.color = new Color(255, 255, 255); 
+            this.show(2);
             this.choice2='B';
-            show2=2;
-            this.show(show2);
-            pkRes=0;
-            this.peRes2=0;
-        }
-        else if(choiceTarget=='C'&&this.ans==0){
+            this.BLabel.color = Color.WHITE;
+            this.ALabel.color = Color.BLACK;
+            this.CLabel.color = Color.BLACK;
+       }
+       else if(CustomEventData==3&&this.ans==0)
+       {
+            this.Submit.interactable=true;
+            this.SubmitSprite.color = new Color(255, 255, 255); 
+            this.show(3);
             this.choice2='C';
-            show2=3;
-            this.show(show2);
-            pkRes=0;
-            this.peRes2=0;
-        }
-        console.log(pkRes);
+            this.CLabel.color = Color.WHITE;
+            this.BLabel.color = Color.BLACK;
+            this.ALabel.color = Color.BLACK;
+       }
     }
 
     show(show2)
@@ -140,6 +168,7 @@ export class Game extends Component {
         }
     }
 
+
     //按钮响应函数
     LosePlay(event,CustomEventData){
         if(event.target.name='lose')
@@ -166,6 +195,7 @@ export class Game extends Component {
     }
 
     start() {
+        
         let children=this.allNode.children;
         children.forEach(childNode=>{
             if(childNode.name=='4'||childNode.name=='5')
@@ -189,6 +219,11 @@ export class Game extends Component {
             }
         });
         //childLose.active=false;
+        this.Submit.interactable=false;
+        this.SubmitSprite.color = new Color(128, 128, 128); // RGB for gray
+        this.ALabel.color = Color.BLACK;
+        this.ALabel.color = Color.BLACK;
+        this.ALabel.color = Color.BLACK;
     }
 
     update(deltaTime: number) {
